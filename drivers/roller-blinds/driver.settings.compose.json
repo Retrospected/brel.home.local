@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ip",
+    "type": "text",
+    "label": { "en": "IP Address Brel Home Connector" },
+    "value": "127.0.0.1",
+    "hint": { "en": "The IP address of your Brel Home Hub." }
+  },
+  {
+    "id": "key",
+    "type": "text",
+    "label": { "en": "Brel Home Connector Key" },
+    "value": "ab2cd34-01ab-a1",
+    "hint": { "en": "The key of your Brel Home Hub." }
+  }
+]

@@ -1,0 +1,74 @@
+<!doctype html>
+<html ng-app="brel.home.local">
+<head>
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <link rel="stylesheet" type="text/css" href="bootstrap.css" />
+  <!--<script type="text/javascript" src="angular.js"></script>-->
+</head>
+<body>
+  <p data-i18n="settings.subtitle"/>
+
+  <div class="form-group">
+    <h2><var style="font-style:normal;" data-i18n="settings.settings"/></h2>
+    <div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Connection</div>
+        <div class="panel-body">
+          <form role="form">
+            <div class="form-group">
+              <label for="key" data-i18n="settings.ip"></label>
+              <input class="form-control" id="ip" type="text" value="" />
+            </div>
+            <div class="form-group">
+              <label for="key" data-i18n="settings.key"></label>
+              <input id="key" type="text" value="" />
+            </div>
+            <div class="form-group">
+              <label for="status" data-i18n="settings.status"></label>
+              <div><var id="status">loading...</var></div>
+            </div>
+          </form>
+          <button id="save" class="right"><var style="font-style:normal;" data-i18n="settings.save-button"/></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+
+  function onHomeyReady( Homey ){
+
+    Homey.ready();
+
+    var ipElement = document.getElementById('ip');
+    var keyElement = document.getElementById('key');
+    var saveElement = document.getElementById('save');
+    var statusElement = document.getElementById('status');
+
+    Homey.api('GET', '/status', null, function ( err, result ) {
+      if ( err ) return Homey.alert( err );
+      if (result == "OK") {
+        statusElement.style.color = "green";
+      }
+      else if (result == "NOT OK" ) {
+        statusElement.style.color = "red";
+      }
+      statusElement.innerHTML = result;
+    });
+
+    saveElement.addEventListener('click', function(e) {
+
+      Homey.api('POST', '/add_bridge', { 'ip': ipElement.value, 'key': keyElement.value }, function( err, result ) {
+        if( err ) return Homey.alert(err);
+
+        Homey.set('ip', ipElement.value)
+        Homey.set('key', keyElement.value)
+
+        window.location.reload();
+      });
+
+    });
+  }
+  </script>
+
+</body>
+</html>

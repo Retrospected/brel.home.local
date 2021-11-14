@@ -1,0 +1,83 @@
+{
+  "id": "brel.home.local",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "Brel Local Home"
+  },
+  "description": {
+    "en": "BREL HOME via your local network."
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Sander Maas",
+    "email": "sandermaas@gmail.com"
+  },
+  "drivers": [
+    {
+      "id": "roller-blinds",
+      "name": {
+        "en": "Roller Blinds"
+      },
+      "class": "windowcoverings",
+      "capabilities": [
+        "windowcoverings_tilt_set"
+      ],
+      "images": {
+        "large": "/drivers/roller-blinds/assets/images/large.png",
+        "small": "/drivers/roller-blinds/assets/images/small.png"
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "ip",
+          "type": "text",
+          "label": {
+            "en": "IP Address Brel Home Connector"
+          },
+          "value": "127.0.0.1",
+          "hint": {
+            "en": "The IP address of your Brel Home Hub."
+          }
+        },
+        {
+          "id": "key",
+          "type": "text",
+          "label": {
+            "en": "Brel Home Connector Key"
+          },
+          "value": "ab2cd34-01ab-a1",
+          "hint": {
+            "en": "The key of your Brel Home Hub."
+          }
+        }
+      ]
+    }
+  ]
+}

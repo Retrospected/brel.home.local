@@ -1,0 +1,11 @@
+{
+    "title": "Brel Local Home",
+    "settings": {
+        "settings": "Settings",
+        "subtitle": "Configure your Brel Home controller",
+        "ip": "IP",
+        "key": "Key",
+        "status": "Connection with the Brel Home Controller",
+        "save-button": "Save changes"
+    }
+}
