@@ -79,5 +79,23 @@
         }
       ]
     }
-  ]
+  ],
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/getStatus"
+    },
+    "addBridge": {
+      "method": "POST",
+      "path": "/addBridge"
+    },
+    "ip": {
+      "method": "GET",
+      "path": "/ip"
+    },
+    "key": {
+      "method": "GET",
+      "path": "/key"
+    }
+  }
 }

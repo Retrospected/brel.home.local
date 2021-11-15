@@ -22,6 +22,24 @@
     "name": "Sander Maas",
     "email": "sandermaas@gmail.com"
   },
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/getStatus"
+    },
+    "addBridge": {
+      "method": "POST",
+      "path": "/addBridge"
+    },
+    "ip": {
+      "method": "GET",
+      "path": "/ip"
+    },
+    "key": {
+      "method": "GET",
+      "path": "/key"
+    }
+  },
   "drivers": [
     {
       "name": {
@@ -55,7 +73,31 @@
           "template": "add_devices"
         }
       ],
-      "id": "roller-blinds"
+      "id": "roller-blinds",
+      "settings": [
+        {
+          "id": "ip",
+          "type": "text",
+          "label": {
+            "en": "IP Address Brel Home Connector"
+          },
+          "value": "127.0.0.1",
+          "hint": {
+            "en": "The IP address of your Brel Home Hub."
+          }
+        },
+        {
+          "id": "key",
+          "type": "text",
+          "label": {
+            "en": "Brel Home Connector Key"
+          },
+          "value": "ab2cd34-01ab-a1",
+          "hint": {
+            "en": "The key of your Brel Home Hub."
+          }
+        }
+      ]
     }
   ]
 }

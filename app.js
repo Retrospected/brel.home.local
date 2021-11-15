@@ -6,32 +6,40 @@ class BrelHomeLocal extends Homey.App {
 
 	async onInit() {
 		this.log('brel.home.local is running...');
+		
+		this.log('DEV MODE, cleaning up to simulate fresh start');
+		this.homey.settings.set("ip", null);
+		this.homey.settings.set("key", null);
 	}
 
-	add_bridge(ip, key, callback) {
+	async add_bridge(ip, key) {
 		//TODO implement test to create object based on breljs library
-		this.status(ip, key, function (res) {
-			if (res = "OK") {
-				this.log('Bridge added succesful...');
-				Homey.ManagerSettings.set("ip", ip)
-				Homey.ManagerSettings.set("key", key)
-				callback("OK")
-			}
-			else if (res = "NOT OK"){
-				this.log('Bridge added failed...');
-				callback("NOT OK")
-			}
-		});
+		this.log("Trying to add bridge with IP: "+ip+" KEY: "+key);
+
+		const result = await this.status(ip, key);
+
+		if (result === "OK") {
+			this.homey.settings.set("ip", ip);
+			this.homey.settings.set("key", key);
+			this.log('Adding bridge succesful...');
+			return "OK";
+		}
+		else {
+			this.log('Adding bridge failed...');
+			return "NOT OK";
+		}
 	}
 
-	status (ip, key, callback) {
-		//TEST connectivity and then:
-		this.log('Status check started');
-
-		callback("OK");
-
-		callback("NOT OK");
-
+	async status (ip, key) {
+		this.log('Retrieving Brel Home Hub connection status...');
+		if (ip != null && key != null) {
+			this.log('Status check started for IP: '+ip+" KEY: "+key);
+			
+			this.log ('Brel Home Hub connection OK');
+			return "OK";
+		}
+		this.log('Brel Home Hub connection NOT OK.');
+		return "NOT OK";
 	}
 }
 

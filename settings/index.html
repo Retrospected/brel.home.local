@@ -44,7 +44,7 @@
     var saveElement = document.getElementById('save');
     var statusElement = document.getElementById('status');
 
-    Homey.api('GET', '/status', null, function ( err, result ) {
+    Homey.api('GET', '/getStatus', null, function ( err, result ) {
       if ( err ) return Homey.alert( err );
       if (result == "OK") {
         statusElement.style.color = "green";
@@ -55,9 +55,19 @@
       statusElement.innerHTML = result;
     });
 
+    Homey.get('ip', function( err, ip ) {
+            if( err ) return Homey.alert( err );
+            ipElement.value = ip;
+    });
+
+    Homey.get('key', function( err, key ) {
+            if( err ) return Homey.alert( err );
+            keyElement.value = key;
+    });
+
     saveElement.addEventListener('click', function(e) {
 
-      Homey.api('POST', '/add_bridge', { 'ip': ipElement.value, 'key': keyElement.value }, function( err, result ) {
+      Homey.api('POST', '/addBridge', { 'ip': ipElement.value, 'key': keyElement.value }, function( err, result ) {
         if( err ) return Homey.alert(err);
 
         Homey.set('ip', ipElement.value)
