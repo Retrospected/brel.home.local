@@ -46,6 +46,7 @@ class RollerBlindsDriver extends Driver {
     return devices;
   }
 
+
 }
 
 module.exports = RollerBlindsDriver;

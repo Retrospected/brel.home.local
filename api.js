@@ -1,7 +1,3 @@
-'use strict';
-
-//const Homey = require('homey');
-
 module.exports = {
   async getStatus ({ homey, query }) {
     const result = await homey.app.status(homey.settings.get("ip"),homey.settings.get("key"));
