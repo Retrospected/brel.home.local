@@ -14,7 +14,7 @@ class DeviceApi {
 
   async getDevices () {
     var result = null
-    this.timer = Timer(5000)
+    this.timer = Timer(500)
 
     console.log("Getting Devices from Device Api");
     this.client = dgram.createSocket("udp4");
@@ -25,10 +25,7 @@ class DeviceApi {
     });
 
     this.client.on('message', msg => {
-        this.timer.abort();
         console.log("result: ", msg.toString());
-        this.client.close();
-        console.log("set result in variable..")
         result = msg.toString();
     });
 
@@ -36,13 +33,17 @@ class DeviceApi {
     console.log("Sending message to: "+this.ip+":"+this.port)
     this.client.send(message, this.port, this.ip);
 
-    // Start timer and wait until is finished
-    await this.timer.start()
+    for(var i = 0; i < 10; i++) {
+      await this.timer.start()
+
+      if (result) {
+        this.client.close();
+        return result
+      }
+    }
 
     console.log('udp request timeout');
     this.client.close();
-
-    console.log("Reaching the end");
     return result;
   }
 };
