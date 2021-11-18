@@ -85,9 +85,9 @@
       "method": "GET",
       "path": "/getStatus"
     },
-    "addBridge": {
+    "addHub": {
       "method": "POST",
-      "path": "/addBridge"
+      "path": "/addHub"
     },
     "ip": {
       "method": "GET",

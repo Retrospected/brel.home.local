@@ -27,9 +27,9 @@
       "method": "GET",
       "path": "/getStatus"
     },
-    "addBridge": {
+    "addHub": {
       "method": "POST",
-      "path": "/addBridge"
+      "path": "/addHub"
     },
     "ip": {
       "method": "GET",
@@ -47,7 +47,7 @@
       },
       "class": "windowcoverings",
       "capabilities": [
-        "windowcoverings_tilt_set"
+        "windowcoverings_set"
       ],
       "platforms": [
         "local"

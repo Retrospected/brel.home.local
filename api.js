@@ -4,9 +4,9 @@ module.exports = {
     return result;
   },
 
-  async addBridge ({ homey, body }) {
-    const addBridgeResult = await homey.app.add_bridge( body.ip, body.key );
-    return addBridgeResult;
+  async addHub ({ homey, body }) {
+    const addHubResult = await homey.app.add_hub( body.ip, body.key );
+    return addHubResult;
   },
 
   async ip ({ homey }) {

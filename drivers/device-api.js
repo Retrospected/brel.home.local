@@ -1,5 +1,6 @@
 const dgram = require('dgram');
 const buffer = require('buffer');
+const strftime = require('strftime');
 const { Timer } = require('./utils');
 
 class DeviceApi {
@@ -7,12 +8,11 @@ class DeviceApi {
     this.ip = ip;
     this.key = key;
     this.port = 32100;
-    console.log("Initializing hub with IP: "+this.ip+" and KEY: "+this.key);
+    console.log("Initializing DeviceApi with IP: "+this.ip+" and KEY: "+this.key);
   }
 
-  async getDevices () {
+  async send_and_receive(message) {
     return new Promise(async resolve => {
-      console.log("Getting Devices from Device Api");
       this.client = dgram.createSocket("udp4");
       this.timer = Timer(5000);
 
@@ -32,15 +32,39 @@ class DeviceApi {
 
       this.client.on('message', msg => {
         console.log("result: ", msg.toString());
+        console.log("<==========================================")
         this.timer.abort();
         this.client.close();
         resolve(msg.toString());
       });
-
-      const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "20211115223426610"}');
+      console.log("==========================================>")
       console.log("Sending message to: "+this.ip+":"+this.port)
+      console.log("==========================================>")
+      console.log(message.toString())
+      console.log("===========================================")
       this.client.send(message, this.port, this.ip);
     });
+  }
+
+  async getDevices () {
+    console.log("Getting Devices from Device Api");
+
+    const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
+    let result = await this.send_and_receive(message);
+
+    return result;
+  }
+
+  async windowcoverings_get (mac, deviceType) {
+    //'{"msgType": "ReadDevice", "mac": "f4cfa24cf2a40002", "deviceType": "10000000", "msgID": "20211119003439473", "AccessToken": "<ACCESSTOKEN>"}'
+    console.log("Getting state for: "+mac+" and deviceType: "+deviceType)
+    return 1;
+  }
+
+  async windowcoverings_set (mac, deviceType, value) {
+    // unknown yet
+    console.log("Setting state for: "+mac+" and deviceType: "+deviceType+" to: "+value)
+    return "OK";
   }
 };
 

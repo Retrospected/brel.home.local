@@ -67,7 +67,7 @@
 
     saveElement.addEventListener('click', function(e) {
 
-      Homey.api('POST', '/addBridge', { 'ip': ipElement.value, 'key': keyElement.value }, function( err, result ) {
+      Homey.api('POST', '/addHub', { 'ip': ipElement.value, 'key': keyElement.value }, function( err, result ) {
         if( err ) return Homey.alert(err);
 
         Homey.set('ip', ipElement.value)

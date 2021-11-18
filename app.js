@@ -22,24 +22,20 @@ class BrelHomeLocal extends Homey.App {
 		//const result = await this.connect(this.homey.settings.get("ip"), this.homey.settings.get("key"))
 		//this.log(result);
 
-		this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"));
-		this.log("DeviceApi initialized!")
-		let results = await this.deviceapi.getDevices();
-		this.log(results);
 	}
 
-	async add_bridge(ip, key) {
-		this.log("Trying to add bridge with IP: "+ip+" KEY: "+key);
+	async add_hub(ip, key) {
+		this.log("Trying to add hub with IP: "+ip+" KEY: "+key);
 		const result = await this.status(ip, key);
 
 		if (result === "OK") {
 			this.homey.settings.set("ip", ip);
 			this.homey.settings.set("key", key);
-			this.log('Adding bridge succesful...');
+			this.log('Adding hub succesful...');
 			return "OK";
 		}
 		else {
-			this.log('Adding bridge failed...');
+			this.log('Adding hub failed...');
 			return "NOT OK";
 		}
 	}
@@ -49,10 +45,10 @@ class BrelHomeLocal extends Homey.App {
 		if (ip != null && key != null) {
 			this.log('Status check started for IP: '+ip+" KEY: "+key);
 
-			let result = await this.connect(this.homey.settings.get("ip"), this.homey.settings.get("key"));
-			this.log("CAme back with: "+result);
+			this.deviceapi = new DeviceApi(ip, key);
+			let result = await this.deviceapi.getDevices();
+			this.log("Came back with: "+result);
 			if (result) {
-				this.log(result);
 				this.log ('Brel Home Hub connection OK');
 				return "OK";
 			}
@@ -60,8 +56,6 @@ class BrelHomeLocal extends Homey.App {
 		this.log('Brel Home Hub connection NOT OK.');
 		return "NOT OK";
 	}
-
-
 }
 
 module.exports = BrelHomeLocal;

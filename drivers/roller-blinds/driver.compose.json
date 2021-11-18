@@ -4,7 +4,7 @@
   },
   "class": "windowcoverings",
   "capabilities": [
-    "windowcoverings_tilt_set"
+    "windowcoverings_set"
   ],
   "platforms": [
     "local"
