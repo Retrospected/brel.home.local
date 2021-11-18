@@ -1,9 +1,9 @@
 const dgram = require('dgram');
 const buffer = require('buffer');
 
-module.exports = class DeviceApi {
+class DeviceApi {
 
-  constructor(ip, key) {
+  constructor (ip, key) {
     this.ip = ip;
     this.key = key;
     this.port = 32100;
@@ -29,16 +29,18 @@ module.exports = class DeviceApi {
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "20211115223426610"}');
     console.log("Sending message to: "+this.ip+":"+this.port)
     this.client.send(message, this.port, this.ip);
-    await this.isTimeout();
+    this.isTimeout();
 
     console.log("Reaching the end");
     return null;
   }
 
-  async isTimeout () {
+  isTimeout () {
     this.timer = setTimeout(() => {
         console.log('udp request timeout');
         this.client.close();
     }, 5000)
   }
 };
+
+module.exports = DeviceApi;
