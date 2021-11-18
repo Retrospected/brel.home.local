@@ -1,8 +1,8 @@
 const dgram = require('dgram');
 const buffer = require('buffer');
+const { Timer } = require('./utils');
 
 class DeviceApi {
-
   constructor (ip, key) {
     this.ip = ip;
     this.key = key;
@@ -11,35 +11,36 @@ class DeviceApi {
   }
 
   async getDevices () {
-    console.log("Getting Devices from Device Api");
-    this.client = dgram.createSocket("udp4");
+    return new Promise(async resolve => {
+      console.log("Getting Devices from Device Api");
+      this.client = dgram.createSocket("udp4");
+      this.timer = Timer(5000);
 
-    this.client.on('error', (err) => {
-        console.log(`client err：\n${ err.stack }`);
-        this.client.close();
-    });
-
-    this.client.on('message', msg => {
-        clearTimeout(this.timer);
-        console.log("result: ", msg.toString());
-        this.client.close();
-        return msg.toString();
-    });
-
-    const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "20211115223426610"}');
-    console.log("Sending message to: "+this.ip+":"+this.port)
-    this.client.send(message, this.port, this.ip);
-    this.isTimeout();
-
-    console.log("Reaching the end");
-    return null;
-  }
-
-  isTimeout () {
-    this.timer = setTimeout(() => {
+      this.timer.start().then(() => {
+        // Timeout after 5 seconds
         console.log('udp request timeout');
         this.client.close();
-    }, 5000)
+        resolve(null);
+      });
+
+      this.client.on('error', (err) => {
+        console.log(`client err：\n${ err.stack }`);
+        this.timer.abort();
+        this.client.close();
+        resolve(null);
+      });
+
+      this.client.on('message', msg => {
+        console.log("result: ", msg.toString());
+        this.timer.abort();
+        this.client.close();
+        resolve(msg.toString());
+      });
+
+      const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "20211115223426610"}');
+      console.log("Sending message to: "+this.ip+":"+this.port)
+      this.client.send(message, this.port, this.ip);
+    });
   }
 };
 
