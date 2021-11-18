@@ -13,7 +13,7 @@ class DeviceApi {
   }
 
   async getDevices () {
-    this.timer = Timer(1000)
+    this.timer = Timer(5000)
 
     console.log("Getting Devices from Device Api");
     this.client = dgram.createSocket("udp4");
