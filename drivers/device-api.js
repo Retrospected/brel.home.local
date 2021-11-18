@@ -13,6 +13,7 @@ class DeviceApi {
   }
 
   async getDevices () {
+    var result = null
     this.timer = Timer(5000)
 
     console.log("Getting Devices from Device Api");
@@ -27,7 +28,8 @@ class DeviceApi {
         this.timer.abort();
         console.log("result: ", msg.toString());
         this.client.close();
-        return msg.toString();
+        console.log("set result in variable..")
+        result = msg.toString();
     });
 
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "20211115223426610"}');
@@ -41,7 +43,7 @@ class DeviceApi {
     this.client.close();
 
     console.log("Reaching the end");
-    return null;
+    return result;
   }
 };
 
