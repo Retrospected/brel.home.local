@@ -31,6 +31,12 @@ class BrelHomeLocal extends Homey.App {
 		if (result === "OK") {
 			this.homey.settings.set("ip", ip);
 			this.homey.settings.set("key", key);
+
+			this.deviceapi = new DeviceApi(ip, key);
+			let token = await this.deviceapi.getToken();
+
+			this.homey.settings.set("token", token);
+
 			this.log('Adding hub succesful...');
 			return "OK";
 		}

@@ -11,7 +11,7 @@ class RollerBlindsDriver extends Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-		this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"));
+		this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
     this.log('MyDriver has been initialized');
   }
 

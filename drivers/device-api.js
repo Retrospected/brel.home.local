@@ -4,11 +4,15 @@ const strftime = require('strftime');
 const { Timer } = require('./utils');
 
 class DeviceApi {
-  constructor (ip, key) {
+  constructor (ip, key, token) {
     this.ip = ip;
     this.key = key;
     this.port = 32100;
     console.log("Initializing DeviceApi with IP: "+this.ip+" and KEY: "+this.key);
+    if (token) {
+      console.log("And token: "+token);
+      this.token = token;
+    }
   }
 
   async send_and_receive(message) {
@@ -44,6 +48,15 @@ class DeviceApi {
       console.log("===========================================")
       this.client.send(message, this.port, this.ip);
     });
+  }
+
+  async getToken () {
+    console.log("Getting Token from Device Api");
+
+    const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
+    let result = await this.send_and_receive(message);
+
+    return JSON.parse(result)['token'];
   }
 
   async getDevices () {
