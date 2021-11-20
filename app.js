@@ -47,11 +47,9 @@ class BrelHomeLocal extends Homey.App {
 				for (const driver in this.homey.drivers.getDrivers())
 				{
 					const devices = this.homey.drivers.getDriver(driver).getDevices();
-
 					devices.forEach((device) => {
 						device.updateSettings();
 					});
-
 				}
 			
 				return "OK";
