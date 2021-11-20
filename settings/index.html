@@ -49,7 +49,7 @@
       if (result == "OK") {
         statusElement.style.color = "green";
       }
-      else if (result == "NOT OK" ) {
+      else if (result == "connection_failed" || result == "empty_config" || result == "key_failed") {
         statusElement.style.color = "red";
       }
       statusElement.innerHTML = result;

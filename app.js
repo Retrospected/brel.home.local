@@ -11,17 +11,9 @@ class BrelHomeLocal extends Homey.App {
 	async onInit() {
 		this.log('brel.home.local is running...');
 
-
-		this.log('DEV MODE, cleaning up to simulate fresh start');
-		this.homey.settings.set("ip", null);
-		this.homey.settings.set("key", null);
-
-		//testcode
-		this.homey.settings.set("ip", "192.168.30.151");
-		this.homey.settings.set("key", "abc");
-		//const result = await this.connect(this.homey.settings.get("ip"), this.homey.settings.get("key"))
-		//this.log(result);
-
+		//this.log('DEV MODE, cleaning up to simulate fresh start');
+		//this.homey.settings.set("ip", null);
+		//this.homey.settings.set("key", null);
 	}
 
 	async add_hub(ip, key) {
@@ -31,11 +23,6 @@ class BrelHomeLocal extends Homey.App {
 		if (result === "OK") {
 			this.homey.settings.set("ip", ip);
 			this.homey.settings.set("key", key);
-
-			this.deviceapi = new DeviceApi(ip, key);
-			let token = await this.deviceapi.getToken();
-
-			this.homey.settings.set("token", token);
 
 			this.log('Adding hub succesful...');
 			return "OK";
@@ -48,19 +35,33 @@ class BrelHomeLocal extends Homey.App {
 
 	async status (ip, key) {
 		this.log('Retrieving Brel Home Hub connection status...');
-		if (ip != null && key != null) {
+		if (ip && key) {
 			this.log('Status check started for IP: '+ip+" KEY: "+key);
 
 			this.deviceapi = new DeviceApi(ip, key);
-			let result = await this.deviceapi.getDevices();
+			let result = await this.deviceapi.authenticate();
 			this.log("Came back with: "+result);
-			if (result) {
+			if (result === "OK") {
 				this.log ('Brel Home Hub connection OK');
+
+				for (const driver in this.homey.drivers.getDrivers())
+				{
+					const devices = this.homey.drivers.getDriver(driver).getDevices();
+
+					devices.forEach((device) => {
+						device.updateSettings();
+					});
+
+				}
+			
 				return "OK";
 			}
+			else {
+				return result
+			}
 		}
-		this.log('Brel Home Hub connection NOT OK.');
-		return "NOT OK";
+		this.log('No IP or KEY configured in settings.');
+		return "empty_config";
 	}
 }
 

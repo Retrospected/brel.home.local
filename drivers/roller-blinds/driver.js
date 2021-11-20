@@ -11,8 +11,8 @@ class RollerBlindsDriver extends Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-		this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
     this.log('MyDriver has been initialized');
+
   }
 
   /**
@@ -21,14 +21,21 @@ class RollerBlindsDriver extends Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
-    let result = await this.deviceapi.getDevices();
-    let devices = []
-    JSON.parse(result)['data'].forEach(function(item) {
-      if (item["deviceType"] === deviceType) {
-       devices.push({ name: 'rollerblind-'+item['mac'].substr(item['mac'].length-8,8), data: { id: item['mac'], deviceType: item["deviceType"] }})
-      }
-    })
-    return devices;
+    let ip = this.homey.settings.get("ip");
+    let key = this.homey.settings.get("key");
+    if (ip && key) {
+      this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
+      
+      let result = await this.deviceapi.getDevices();
+      let devices = []
+      JSON.parse(result)['data'].forEach(function(item) {
+        if (item["deviceType"] === deviceType) {
+        devices.push({ name: 'rollerblind-'+item['mac'].substr(item['mac'].length-8,8), data: { id: item['mac'], deviceType: item["deviceType"] }})
+        }
+      })
+      return devices;
+    }
+    return null;
   }
 }
 

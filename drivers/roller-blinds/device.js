@@ -16,7 +16,11 @@ class RollerBlindsDevice extends Device {
     this.log("MAC:", this.getData()['id']);
     this.log("deviceType:", this.getData()['deviceType']);
 
-    this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"));
+    let ip = this.homey.settings.get("ip");
+    let key = this.homey.settings.get("key");
+
+    this.deviceapi = new DeviceApi(ip, key);
+    await this.deviceapi.authenticate()
 
     this.registerCapabilityListener('windowcoverings_set', async (value) => {
       this.log('State set: ',value)
@@ -28,6 +32,7 @@ class RollerBlindsDevice extends Device {
 
       this.deviceapi.windowcoverings_get(this.getData()['id'],this.getData()['deviceType'])
       .then((result) => {
+        this.setAvailable();
         this.setCapabilityValue('windowcoverings_set', result).catch(this.error);
       })
       .catch((error) => {
@@ -35,6 +40,11 @@ class RollerBlindsDevice extends Device {
       });
 
     }, 3000);
+  }
+
+  async updateSettings() {
+    this.deviceapi.updateSettings(this.homey.settings.get("ip"), this.homey.settings.get("key"));
+    this.deviceapi.authenticate();
   }
 
   /**
