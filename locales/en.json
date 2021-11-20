@@ -1,11 +1,11 @@
 {
     "title": "Brel Local Home",
     "settings": {
-        "settings": "Settings",
-        "subtitle": "Configure your Brel Home Hub",
-        "ip": "IP",
-        "key": "Key",
-        "status": "Connection with the Brel Home Hub",
-        "save-button": "Save changes"
+        "settings": "Connection settings",
+        "subtitleIp": "It is recommended to assign a static IP to your Brel Home Hub.",
+        "subtitleKey": "To obtain your key, go to your profile in the Brel Home app and tap the version at the bottom 5 times.",
+        "status": "Connection status with your Brel Home Hub",
+        "save-button": "Save changes",
+        "note": "Note: your devices have to be paired via the Brel Home app before you can add them to Homey. After the devices have been paired, you can block connection from the Hubs to the cloud backend, or even delete your account."
     }
 }

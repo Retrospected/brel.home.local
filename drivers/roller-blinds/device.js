@@ -19,26 +19,32 @@ class RollerBlindsDevice extends Device {
     let ip = this.homey.settings.get("ip");
     let key = this.homey.settings.get("key");
 
+    this.paused = false;
     this.deviceapi = new DeviceApi(ip, key);
     await this.deviceapi.authenticate()
 
     this.registerCapabilityListener('windowcoverings_set', async (value) => {
       this.log('State set: ',value)
       this.deviceapi.windowcoverings_set(this.getData()['id'],this.getData()['deviceType'], value)
+      this.paused = true;
+      const waitFor = delay => new Promise(resolve => setTimeout(resolve, delay));
+      await waitFor(10000);
+      this.paused = false;
     });
 
     setInterval(() => {
-      this.log("Pulling state of the blind in this function")
-
-      this.deviceapi.windowcoverings_get(this.getData()['id'],this.getData()['deviceType'])
-      .then((result) => {
-        this.setAvailable();
-        this.setCapabilityValue('windowcoverings_set', result).catch(this.error);
-      })
-      .catch((error) => {
-        this.setUnavailable('Could not connect to the Brel Home Hub').catch(error)
-      });
-
+      if (!this.paused) {
+        this.deviceapi.windowcoverings_get(this.getData()['id'],this.getData()['deviceType'])
+        .then((result) => {
+          this.setAvailable();
+          this.setCapabilityValue('windowcoverings_set', result).catch(this.error);
+        })
+        .catch((error) => {
+          this.setUnavailable('Could not connect to the Brel Home Hub').catch(error)
+        });
+      } else {
+        this.log('Paused')
+      }
     }, 3000);
   }
 
