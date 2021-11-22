@@ -103,12 +103,27 @@ class DeviceApi {
     // Request of the get-devices query:
     // {"msgType": "GetDeviceList", "msgID": "20211120185942192"}
 
-    const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
-    const result = await this.send_and_receive(message);
+    const messageDevices = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
+    const resultDevices = await this.send_and_receive(message);
+
     // Response of the get-devices query:
     // {"msgType":"GetDeviceListAck","mac":"<macaddress>","deviceType":"02000001","fwVersion":"A1.0.1_B0.1.4","ProtocolVersion":"0.9","token":"<token>","data":[{"mac":"<macaddress>","deviceType":"02000001"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"}]}
 
-    return result;
+    const devicesList = []
+    
+    JSON.parse(resultDevices["data"]).forEach(async (device) => {
+      //Request for the ReadDevice query:
+      // {"msgType": "ReadDevice", "mac": "", "deviceType": "", "msgID": "20211120185942192"}
+      if (device["mac"] != "02000001") {
+        const messageDevice = Buffer.from('{"msgType": "ReadDevice", "mac": "'+device['mac']+'", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
+        const deviceResult = await this.send_and_receive(messageDevice);
+        devicesList.push(deviceResult);
+      }
+    });
+
+    this.log("Devices found: "+devicesList)
+
+    return deviceList;
   }
 
   /**
