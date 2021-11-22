@@ -3,7 +3,7 @@
 const { Driver } = require('homey');
 const DeviceApi = require('../device-api.js');
 
-const deviceType = "10000000";
+const deviceTypes = ["10000000"];
 
 class RollerBlindsDriver extends Driver {
 
@@ -12,7 +12,6 @@ class RollerBlindsDriver extends Driver {
    */
   async onInit() {
     this.log('MyDriver has been initialized');
-
   }
 
   /**
@@ -21,15 +20,15 @@ class RollerBlindsDriver extends Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
-    let ip = this.homey.settings.get("ip");
-    let key = this.homey.settings.get("key");
+    var ip = this.homey.settings.get("ip");
+    var key = this.homey.settings.get("key");
     if (ip && key) {
       this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
       
-      let result = await this.deviceapi.getDevices();
-      let devices = []
+      var result = await this.deviceapi.getDevices();
+      var devices = []
       JSON.parse(result)['data'].forEach(function(item) {
-        if (item["deviceType"] === deviceType) {
+        if (deviceTypes.includes(item["deviceType"])) {
         devices.push({ name: 'rollerblind-'+item['mac'].substr(item['mac'].length-8,8), data: { id: item['mac'], deviceType: item["deviceType"] }})
         }
       })
