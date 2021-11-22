@@ -20,13 +20,13 @@ class RollerBlindsDriver extends Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
-    var ip = this.homey.settings.get("ip");
-    var key = this.homey.settings.get("key");
+    const ip = this.homey.settings.get("ip");
+    const key = this.homey.settings.get("key");
     if (ip && key) {
       this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
       
-      var result = await this.deviceapi.getDevices();
-      var devices = []
+      const result = await this.deviceapi.getDevices();
+      const devices = []
       JSON.parse(result)['data'].forEach(function(item) {
         if (deviceTypes.includes(item["deviceType"])) {
         devices.push({ name: 'rollerblind-'+item['mac'].substr(item['mac'].length-8,8), data: { id: item['mac'], deviceType: item["deviceType"] }})
