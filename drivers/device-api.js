@@ -42,9 +42,9 @@ class DeviceApi {
   }
   async getAccessToken(key, token) {
     console.log("Creating AccessToken using: "+key+" and: "+token)
-    let cipher = crypto.createCipheriv("aes-128-ecb", key, '')
+    var cipher = crypto.createCipheriv("aes-128-ecb", key, '')
     cipher.setAutoPadding(false)
-    let result = cipher.update(token).toString('hex');
+    var result = cipher.update(token).toString('hex');
     result += cipher.final().toString('hex');
     return result.toUpperCase();
   }
@@ -94,7 +94,7 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
 
-    let result = await this.send_and_receive(message);
+    var result = await this.send_and_receive(message);
 
     return JSON.parse(result)['token'];
   }
@@ -105,7 +105,7 @@ class DeviceApi {
     // {"msgType": "GetDeviceList", "msgID": "20211120185942192"}
 
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
-    let result = await this.send_and_receive(message);
+    var result = await this.send_and_receive(message);
     // Response of the get-devices query:
     // {"msgType":"GetDeviceListAck","mac":"<macaddress>","deviceType":"02000001","fwVersion":"A1.0.1_B0.1.4","ProtocolVersion":"0.9","token":"<token>","data":[{"mac":"<macaddress>","deviceType":"02000001"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"}]}
 
@@ -167,7 +167,7 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "ReadDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
 
-    let state = await this.send_and_receive(message);
+    var state = await this.send_and_receive(message);
     // Response of the get-state query:
     // {"msgType":"ReadDeviceAck","mac":"<macaddress>","deviceType":"10000000","msgID":"20211120195744003","data":{"type":1,"operation":2,"currentPosition":7,"currentAngle":141,"currentState":3,"voltageMode":1,"batteryLevel":1245,"wirelessMode":1,"RSSI":-79}}
 
@@ -181,7 +181,7 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "WriteDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "data": {"targetPosition": '+(1-value)*100+'}, "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
 
-    let state = await this.send_and_receive(message);
+    var state = await this.send_and_receive(message);
     // Request of the set-state query:
     // {"msgType":"WriteDeviceAck","mac":"<macaddress>","deviceType":"10000000","msgID":"20211120195632984","data":{"type":1,"operation":2,"currentPosition":0,"currentAngle":0,"currentState":3,"voltageMode":1,"batteryLevel":1245,"wirelessMode":1,"RSSI":-89}}}
 
