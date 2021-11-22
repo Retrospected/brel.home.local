@@ -3,7 +3,7 @@
 const { Driver } = require('homey');
 const DeviceApi = require('../device-api.js');
 
-const deviceType = "10000000"; //433Mhz radio motor
+const deviceType = 10000000; //433Mhz radio motor
 
 /* blindTypes
 1:Roller Blinds
@@ -24,7 +24,7 @@ const deviceType = "10000000"; //433Mhz radio motor
 
 const blindTypes = [1, 3]
 
-class RollerBlindsDriver extends Driver {
+class StandardBlindsDriver extends Driver {
 
   /**
    * onInit is called when the driver is initialized.
@@ -44,15 +44,12 @@ class RollerBlindsDriver extends Driver {
     if (ip && key) {
       this.deviceapi = new DeviceApi(this.homey.settings.get("ip"), this.homey.settings.get("key"), this.homey.settings.get("token"));
       
-      const result = await this.deviceapi.getDevices();
+      const result = await this.deviceapi.getDevices(deviceType);
       const devices = []
-      JSON.parse(result)['data'].forEach(function(item) {
-        if (item["deviceType"] === deviceType) {
-          item["data"].forEach((device) => {
-            if (blindTypes.includes(device["type"])) {
-              devices.push({ name: 'rollerblind-'+item['mac'].substr(item['mac'].length-8,8), data: { id: item['mac'], deviceType: item["deviceType"] }})
-            }
-          });
+      result.forEach(function(item) {
+        const device = JSON.parse(item);
+        if (blindTypes.includes(device["data"]["type"])) {
+          devices.push({ name: 'standardblind-'+device['mac'].substr(device['mac'].length-8,8), data: { id: device['mac'], deviceType: device["deviceType"], blindType: device["data"]["type"] }})
         }
       });
       return devices;
@@ -61,4 +58,4 @@ class RollerBlindsDriver extends Driver {
   }
 }
 
-module.exports = RollerBlindsDriver;
+module.exports = StandardBlindsDriver;

@@ -14,10 +14,11 @@ class RollerBlindsDevice extends Device {
     this.log("Name:", this.getName());
     this.log("Class:", this.getClass());
     this.log("MAC:", this.getData()['id']);
+    this.log("blindType:", this.getData()['blindType']);
     this.log("deviceType:", this.getData()['deviceType']);
 
-    var ip = this.homey.settings.get("ip");
-    var key = this.homey.settings.get("key");
+    const ip = this.homey.settings.get("ip");
+    const key = this.homey.settings.get("key");
 
     this.paused = false;
     this.deviceapi = new DeviceApi(ip, key);

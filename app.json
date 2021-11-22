@@ -56,8 +56,8 @@
         "lan"
       ],
       "images": {
-        "small": "/drivers/roller-blinds/assets/images/small.png",
-        "large": "/drivers/roller-blinds/assets/images/large.png"
+        "small": "/drivers/standard-blinds/assets/images/small.png",
+        "large": "/drivers/standard-blinds/assets/images/large.png"
       },
       "pair": [
         {
@@ -72,7 +72,7 @@
           "template": "add_devices"
         }
       ],
-      "id": "roller-blinds",
+      "id": "standard-blinds",
       "settings": []
     }
   ]
