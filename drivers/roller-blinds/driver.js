@@ -3,7 +3,7 @@
 const { Driver } = require('homey');
 const DeviceApi = require('../device-api.js');
 
-const deviceTypes = ["10000000"];
+const deviceTypes = ["10000000", "10000001"];
 
 class RollerBlindsDriver extends Driver {
 
