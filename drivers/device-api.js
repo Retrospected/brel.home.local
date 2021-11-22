@@ -42,9 +42,9 @@ class DeviceApi {
   }
   async getAccessToken(key, token) {
     console.log("Creating AccessToken using: "+key+" and: "+token)
-    let cipher = crypto.createCipheriv("aes-128-ecb", key, '')
+    var cipher = crypto.createCipheriv("aes-128-ecb", key, '')
     cipher.setAutoPadding(false)
-    let result = cipher.update(token).toString('hex');
+    var result = cipher.update(token).toString('hex');
     result += cipher.final().toString('hex');
     return result.toUpperCase();
   }
@@ -57,7 +57,6 @@ class DeviceApi {
       this.timer.start().then(() => {
         // Timeout after 5 seconds
         console.log('udp request timeout');
-        this.client.close();
         resolve(null);
       });
 
@@ -94,7 +93,7 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
 
-    let result = await this.send_and_receive(message);
+    var result = await this.send_and_receive(message);
 
     return JSON.parse(result)['token'];
   }
@@ -105,7 +104,7 @@ class DeviceApi {
     // {"msgType": "GetDeviceList", "msgID": "20211120185942192"}
 
     const message = Buffer.from('{"msgType": "GetDeviceList", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'"}');
-    let result = await this.send_and_receive(message);
+    var result = await this.send_and_receive(message);
     // Response of the get-devices query:
     // {"msgType":"GetDeviceListAck","mac":"<macaddress>","deviceType":"02000001","fwVersion":"A1.0.1_B0.1.4","ProtocolVersion":"0.9","token":"<token>","data":[{"mac":"<macaddress>","deviceType":"02000001"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"},{"mac":"<macaddress>","deviceType":"10000000"}]}
 
@@ -152,11 +151,31 @@ class DeviceApi {
       BIDIRECTIONAL_MECHANICAL_LIMITS = 2
       OTHER = 3
 
+    Operations to change normal bidirectional blinds:
+
     currentPosition: 0 - 100
     targetPosition: 0 - 100
 
     Note: Homey considers the "open" state of Window Coverings as 1, where Brel sees open as 0. Homey considers closed as 0, where Brel sees closed as 100.
     Brel = (1-Homey)*100
+
+    Operations to change angled blinds:
+
+    target_angle = round(angle*self._max_angle/180.0, 0)
+
+    targetAngle (generic angle)
+    targetAngle_B (Bottom)
+    targetAngle_T (Top)
+    targetAngle_C (Combined)
+    
+    Note: Angle prestend in degrees, but the API calulcates this based on:
+    Max angle usually is 180 but for ShangriLaBlinds 90
+
+    Operations to change TDBU blinds, where the position is in %, closed is 0 and up is 100:
+
+    targetPosition_B (Bottom)
+    targetPosition_T (Top)
+    targetPosition_C (Combined)
 
   **/
 
@@ -167,7 +186,7 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "ReadDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
 
-    let state = await this.send_and_receive(message);
+    var state = await this.send_and_receive(message);
     // Response of the get-state query:
     // {"msgType":"ReadDeviceAck","mac":"<macaddress>","deviceType":"10000000","msgID":"20211120195744003","data":{"type":1,"operation":2,"currentPosition":7,"currentAngle":141,"currentState":3,"voltageMode":1,"batteryLevel":1245,"wirelessMode":1,"RSSI":-79}}
 
@@ -181,9 +200,51 @@ class DeviceApi {
 
     const message = Buffer.from('{"msgType": "WriteDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "data": {"targetPosition": '+(1-value)*100+'}, "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
 
-    let state = await this.send_and_receive(message);
+    var state = await this.send_and_receive(message);
     // Request of the set-state query:
     // {"msgType":"WriteDeviceAck","mac":"<macaddress>","deviceType":"10000000","msgID":"20211120195632984","data":{"type":1,"operation":2,"currentPosition":0,"currentAngle":0,"currentState":3,"voltageMode":1,"batteryLevel":1245,"wirelessMode":1,"RSSI":-89}}}
+
+    return "OK";
+  }
+
+  async windowcoverings_tilt_up (mac, deviceType, value) {
+    // Request of the tilt-up-state query:
+    // 
+    //console.log("Setting tilt up for: "+mac+" and deviceType: "+deviceType+" to: "+value*100)
+
+    const message = Buffer.from('{"msgType": "WriteDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "data": {"currentPosition_T": '+(1-value)*100+'}, "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
+
+    var state = await this.send_and_receive(message);
+    // Request of the tilt-up-state query:
+    // 
+    
+    return "OK";
+  }
+
+  async windowcoverings_tilt_set (mac, deviceType, value) {
+    // Request of the tilt-set-state query:
+    //
+    //console.log("Setting tilt set for: "+mac+" and deviceType: "+deviceType+" to: "+value*100)
+
+    const message = Buffer.from('{"msgType": "WriteDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "data": {"targetPosition": '+(1-value)*100+'}, "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
+
+    var state = await this.send_and_receive(message);
+    // Request of the tilt-set-state query:
+    // 
+
+    return "OK";
+  }
+
+  async windowcoverings_tilt_down (mac, deviceType, value) {
+    // Request of the tilt-down-state query:
+    // 
+    //console.log("Setting tilt down for: "+mac+" and deviceType: "+deviceType+" to: "+value*100)
+
+    const message = Buffer.from('{"msgType": "WriteDevice", "mac": "'+mac+'", "deviceType": "'+deviceType+'", "data": {"currentPosition_D": '+(1-value)*100+'}, "msgID": "'+strftime("%Y%m%d%H%M%S%L", new Date())+'", "AccessToken": "'+this.accesstoken+'"}');
+
+    var state = await this.send_and_receive(message);
+    // Request of the tilt-down-state query:
+    // 
 
     return "OK";
   }
